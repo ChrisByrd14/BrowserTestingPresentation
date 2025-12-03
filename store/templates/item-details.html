@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ item.name | title }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ item.name | title }}</h1>
+    $ {{ "{:,.2f}".format(item.sale_price) }}
+    <p>{{ item.description | replace('\n', '</p><p>') | safe }}</p>
+{% endblock %}
