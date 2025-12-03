@@ -4,7 +4,7 @@ from decimal import Decimal
 import peewee
 
 
-db = peewee.SqliteDatabase('store.db')
+db = peewee.SqliteDatabase("store.db")
 
 
 class __BaseModel(peewee.Model):
@@ -33,14 +33,21 @@ class Product(__BaseModel):
 
 
 class Cart(__BaseModel):
-    session_id = peewee.CharField()
+    session_id = peewee.CharField(unique=True)
 
 
 class CartItem(__BaseModel):
-    cart = peewee.ForeignKeyField(Cart, backref='items')
-    product_id = peewee.ForeignKeyField(Product, backref='carts')
+    cart = peewee.ForeignKeyField(Cart, backref="items")
+    product_id = peewee.ForeignKeyField(Product, backref="carts")
     quantity = peewee.IntegerField()
 
 
 db.connect()
 db.create_tables([Product, Cart, CartItem], safe=True)
+
+
+def get_cart_items(session_id: str | None, **kwargs) -> list[CartItem]:
+    if not session_id:
+        return []
+
+    return list(Cart.get(session_id=session_id).items)
