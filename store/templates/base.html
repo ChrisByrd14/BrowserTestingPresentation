@@ -4,6 +4,9 @@
         <title>{% block title %}Widgets R Us{% endblock %}</title>
     </head>
     <body>
+        {% if cart_count is defined %}
+            Cart Count: {{cart_count}}
+        {% endif %}
         {% block content %}{% endblock %}
     </body>
 </html>
