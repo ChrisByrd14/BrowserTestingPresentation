@@ -5,6 +5,15 @@
 
         <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet"/>
         <link href="{{url_for('static', filename='css/font-awesome.min.css')}}" rel="stylesheet"/>
+        <style>
+            body {
+                background: #f8f8f8;
+            }
+            .float-right {
+                float: right;
+            }
+        </style>
+        {% block styles %}{% endblock %}
     </head>
     <body>
         {% if cart_count is defined %}

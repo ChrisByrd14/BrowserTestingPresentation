@@ -1,10 +1,10 @@
 from datetime import datetime
-from decimal import Decimal
+import os.path
 
 import peewee
 
 
-db = peewee.SqliteDatabase("store.db")
+db = peewee.SqliteDatabase(os.path.join(os.path.dirname(__file__), "..", "store.db"))
 
 
 class __BaseModel(peewee.Model):
@@ -54,6 +54,13 @@ class Product(__BaseModel):
         }
 
 
+class Review(__BaseModel):
+    reviewer = peewee.CharField()
+    review_text = peewee.TextField()
+    rating = peewee.DecimalField()
+    product_id = peewee.ForeignKeyField(Product, backref="reviews")
+
+
 class Cart(__BaseModel):
     session_id = peewee.CharField(unique=True)
 
@@ -65,11 +72,14 @@ class CartItem(__BaseModel):
 
 
 db.connect()
-db.create_tables([Product, Cart, CartItem], safe=True)
+db.create_tables([Product, Review, Cart, CartItem], safe=True)
 
 
 def get_cart_items(session_id: str | None, **kwargs) -> list[CartItem]:
-    if not session_id:
-        return []
+    try:
+        if not session_id:
+            raise ValueError()
 
-    return list(Cart.get(session_id=session_id).items)
+        return list(Cart.get(session_id=session_id).items)
+    except:
+        return []
